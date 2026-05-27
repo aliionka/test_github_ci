@@ -24,8 +24,8 @@ jobs: # задачи (что делать)
       - name: Install dependencies
         run: | 
           python -m pip install --upgrade pip
-          pip install ruff pytest black
-#          pip install -r requirements.txt
+          pip install ruff pytest black Flask Flask-SQLAlchemy
+          pip install -r requirements.txt
       - name: Lint with ruff
         run: |
           ruff check .
