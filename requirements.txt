@@ -1,0 +1,14 @@
+Flask~=3.1.2
+pip~=25.0.1
+attrs~=26.1.0
+pillow~=12.1.1
+factory_boy~=3.3.3
+pytest~=9.0.3
+colorama~=0.4.6
+packaging~=26.0
+click~=8.3.1
+MarkupSafe~=3.0.3
+Werkzeug~=3.1.4
+Jinja2~=3.1.6
+blinker~=1.9.0
+itsdangerous~=2.2.0
