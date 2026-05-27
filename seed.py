@@ -24,37 +24,37 @@ def create_clients():
             name="Иван",
             surname="Петров",
             credit_card="1111-2222-3333-4444",
-            car_number="A123BC"
+            car_number="A123BC",
         ),
         Client(
             name="Мария",
             surname="Иванова",
             credit_card="2222-3333-4444-5555",
-            car_number="B456CD"
+            car_number="B456CD",
         ),
         Client(
             name="Алексей",
             surname="Сидоров",
             credit_card="3333-4444-5555-6666",
-            car_number="C789EF"
+            car_number="C789EF",
         ),
         Client(
             name="Елена",
             surname="Кузнецова",
             credit_card="4444-5555-6666-7777",
-            car_number="D012GH"
+            car_number="D012GH",
         ),
         Client(
             name="Дмитрий",
             surname="Смирнов",
             credit_card="5555-6666-7777-8888",
-            car_number="E345IJ"
+            car_number="E345IJ",
         ),
         Client(
             name="Ольга",
             surname="Волкова",
             credit_card=None,  # без кредитной карты
-            car_number="F678KL"
+            car_number="F678KL",
         ),
     ]
 
@@ -74,25 +74,25 @@ def create_parkings():
             address="ул. Ленина, 10",
             opened=True,
             count_places=50,
-            count_available_places=50
+            count_available_places=50,
         ),
         Parking(
             address="пр. Мира, 25",
             opened=True,
             count_places=30,
-            count_available_places=25  # 5 мест занято
+            count_available_places=25,  # 5 мест занято
         ),
         Parking(
             address="ул. Гагарина, 5",
             opened=False,  # закрытая парковка
             count_places=20,
-            count_available_places=20
+            count_available_places=20,
         ),
         Parking(
             address="ул. Пушкина, 15",
             opened=True,
             count_places=100,
-            count_available_places=85  # 15 мест занято
+            count_available_places=85,  # 15 мест занято
         ),
     ]
 
@@ -115,7 +115,7 @@ def create_parking_logs(clients, parkings):
         client_id=clients[0].id,  # Иван Петров
         parking_id=parkings[1].id,  # пр. Мира, 25
         time_in=datetime.utcnow() - timedelta(hours=2),  # заехал 2 часа назад
-        time_out=None  # ещё не выезжал
+        time_out=None,  # ещё не выезжал
     )
     logs.append(log1)
 
@@ -124,7 +124,7 @@ def create_parking_logs(clients, parkings):
         client_id=clients[1].id,  # Мария Иванова
         parking_id=parkings[0].id,  # ул. Ленина, 10
         time_in=datetime.utcnow() - timedelta(hours=5),
-        time_out=datetime.utcnow() - timedelta(hours=3)  # стояла 2 часа
+        time_out=datetime.utcnow() - timedelta(hours=3),  # стояла 2 часа
     )
     logs.append(log2)
 
@@ -133,7 +133,7 @@ def create_parking_logs(clients, parkings):
         client_id=clients[2].id,  # Алексей Сидоров
         parking_id=parkings[3].id,  # ул. Пушкина, 15
         time_in=datetime.utcnow() - timedelta(days=1, hours=3),
-        time_out=datetime.utcnow() - timedelta(days=1, hours=1)  # стоял 2 часа
+        time_out=datetime.utcnow() - timedelta(days=1, hours=1),  # стоял 2 часа
     )
     logs.append(log3)
 
@@ -142,7 +142,7 @@ def create_parking_logs(clients, parkings):
         client_id=clients[3].id,  # Елена Кузнецова
         parking_id=parkings[3].id,  # ул. Пушкина, 15
         time_in=datetime.utcnow() - timedelta(hours=30),  # заехал вчера
-        time_out=None  # всё ещё на парковке
+        time_out=None,  # всё ещё на парковке
     )
     logs.append(log4)
 
@@ -151,7 +151,7 @@ def create_parking_logs(clients, parkings):
         client_id=clients[4].id,  # Дмитрий Смирнов
         parking_id=parkings[0].id,  # ул. Ленина, 10
         time_in=datetime.utcnow() - timedelta(days=7, hours=10),
-        time_out=datetime.utcnow() - timedelta(days=7, hours=8)  # стоял 2 часа
+        time_out=datetime.utcnow() - timedelta(days=7, hours=8),  # стоял 2 часа
     )
     logs.append(log5)
 
@@ -161,7 +161,7 @@ def create_parking_logs(clients, parkings):
         client_id=clients[5].id,  # Ольга Волкова
         parking_id=parkings[2].id,  # ул. Гагарина, 5 (закрыта!)
         time_in=datetime.utcnow() - timedelta(hours=1),
-        time_out=datetime.utcnow() - timedelta(minutes=30)  # быстро выехал
+        time_out=datetime.utcnow() - timedelta(minutes=30),  # быстро выехал
     )
     logs.append(log6)
 
@@ -171,7 +171,9 @@ def create_parking_logs(clients, parkings):
     # Обновляем количество свободных мест на парковках в соответствии с логами
     # Парковка 1 (ул. Ленина, 10) - изначально 50 мест
     # Лог2: занято, Лог5: было занято (уже выехал) - итого: 1 место занято в данный момент
-    parkings[0].count_available_places = 49  # 1 место занято (Мария уже выехала, но лог4 на другой)
+    parkings[0].count_available_places = (
+        49  # 1 место занято (Мария уже выехала, но лог4 на другой)
+    )
 
     # Парковка 2 (пр. Мира, 25) - изначально 25 мест свободно
     # Лог1: активная парковка - 1 место занято
@@ -198,11 +200,12 @@ def show_statistics():
     print(f"\n👥 Клиенты: {len(clients)}")
     for client in clients:
         active_logs = ClientParking.query.filter_by(
-            client_id=client.id,
-            time_out=None
+            client_id=client.id, time_out=None
         ).all()
         active_status = "🔴 НА ПАРКОВКЕ" if active_logs else "⚪ СВОБОДЕН"
-        print(f"  - {client.name} {client.surname} ({client.car_number}) - {active_status}")
+        print(
+            f"  - {client.name} {client.surname} ({client.car_number}) - {active_status}"
+        )
 
     parkings = Parking.query.all()
     print(f"\n🅿️  Парковки: {len(parkings)}")
@@ -210,14 +213,17 @@ def show_statistics():
         status = "🟢 ОТКРЫТА" if parking.opened else "🔴 ЗАКРЫТА"
         occupied = parking.count_places - parking.count_available_places
         print(
-            f"  - {parking.address}: {status}, свободно {parking.count_available_places}/{parking.count_places} мест (занято {occupied})")
+            f"  - {parking.address}: {status}, свободно {parking.count_available_places}/{parking.count_places} мест (занято {occupied})"
+        )
 
     active_parkings = ClientParking.query.filter_by(time_out=None).all()
     print(f"\n🚗 Активных парковок: {len(active_parkings)}")
     for log in active_parkings:
         client = Client.query.get(log.client_id)
         parking = Parking.query.get(log.parking_id)
-        print(f"  - {client.name} {client.surname} на {parking.address} с {log.time_in.strftime('%H:%M:%S')}")
+        print(
+            f"  - {client.name} {client.surname} на {parking.address} с {log.time_in.strftime('%H:%M:%S')}"
+        )
 
     print("\n" + "=" * 50)
 
@@ -250,5 +256,5 @@ def main():
             db.session.rollback()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
