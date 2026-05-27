@@ -11,6 +11,17 @@ from app.config import config_dict
 from app.models import Client, Parking, ClientParking
 
 
+# Автоматическая очистка таблиц
+@pytest.fixture(autouse=True)
+def clean_tables(db_session):
+    """Очищает таблицы перед каждым тестом"""
+    db_session.query(ClientParking).delete()
+    db_session.query(Parking).delete()
+    db_session.query(Client).delete()
+    db_session.commit()
+    yield
+
+
 # ======================= БАЗОВЫЕ ФИКСТУРЫ =======================
 @pytest.fixture(scope="session")  # 1 раз на все тесты
 def app():
@@ -104,7 +115,7 @@ def client_with_active_parking(db_session, sample_parking, active_parking_log):
 def sample_parking(db_session):
     """Создание тестового паркинга в БД"""
     parking = Parking(
-        address="Suvorovsky avenue, 1",
+        address="Suvorovsky avenue, 10A",
         opened=True,
         count_places=50,
         count_available_places=20,
@@ -118,7 +129,7 @@ def sample_parking(db_session):
 def closed_parking(db_session):
     """Закрытая парковка"""
     parking = Parking(
-        address="Closed street, 1",
+        address="Closed street, 2",
         opened=False,
         count_places=45,
         count_available_places=30,
@@ -132,7 +143,7 @@ def closed_parking(db_session):
 def full_parking(db_session):
     """Парковка без свободных мест"""
     parking = Parking(
-        address="Full avenue, 1", opened=True, count_places=45, count_available_places=0
+        address="Full avenue, 2", opened=True, count_places=45, count_available_places=0
     )
     db_session.add(parking)
     db_session.commit()
@@ -166,3 +177,5 @@ def active_parking_log(db_session, sample_client, sample_parking):
     db_session.add(active_parking_log)
     db_session.commit()
     return active_parking_log
+
+

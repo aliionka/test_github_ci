@@ -155,7 +155,7 @@ class TestParkingAPI:
     """Тестирование парковочных операций"""
 
     ############### ЗАЕЗД НА ПАРКОВКУ ###############
-    def test_enter_success(self, client, db_session, sample_client, sample_parking):
+    def test_enter_success(self, client, sample_client, sample_parking):
         """Позитивный тест заезда на парковку +"""
         # Запоминаем количество свободных мест ДО
         initial_spots = sample_parking.count_available_places
@@ -177,8 +177,9 @@ class TestParkingAPI:
         ).first()
         assert log is not None
         # Проверяем БД: уменьшилось ли количество мест
-        db_session.refresh(sample_parking)
-        assert sample_parking.count_available_places == initial_spots - 1
+        updated_parking = Parking.query.get(sample_parking.id)
+        assert updated_parking.count_available_places == initial_spots - 1
+
 
     def test_enter_no_spots(self, client, sample_client, full_parking):
         """Заезд на заполненную парковку +"""
@@ -189,6 +190,7 @@ class TestParkingAPI:
         assert response.status_code == 400
         assert "No available places" in response.get_json()["error"]
 
+
     def test_enter_to_close_parking(self, client, sample_client, closed_parking):
         """Заезд на закрытую парковку +"""
         response = client.post(
@@ -197,6 +199,7 @@ class TestParkingAPI:
         )
         assert response.status_code == 400
         assert "Parking is closed" in response.get_json()["error"]
+
 
     def test_enter_with_nonexists_client(self, client, sample_parking):
         """Заезд на парковку с несуществующим клиентом +"""
@@ -208,16 +211,12 @@ class TestParkingAPI:
         assert "Client not found" in response.get_json()["error"]
 
     ############### ВЫЕЗД С ПАРКОВКИ ###############
-    def test_exit_success(self, client, db_session, active_parking_log):
+    def test_exit_success(self, client, active_parking_log):
         """Позитивный тест выезда с парковки +"""
-        parking = db_session.get(Parking, active_parking_log.parking_id)
+        parking = Parking.query.get(active_parking_log.parking_id)
         initial_spots = parking.count_available_places
 
-        db_client = db_session.get(Client, active_parking_log.client_id)
-        print("Client ID:", db_client.id)
-        print("Client name:", db_client.name)
-        print("Credit card:", db_client.credit_card)
-        print("Has credit card:", db_client.credit_card is not None)
+        db_client = Client.query.get(active_parking_log.client_id)
         assert db_client.credit_card is not None
 
         # Делаем запрос
@@ -241,20 +240,20 @@ class TestParkingAPI:
         assert "time_out" in data
         assert "duration_minutes" in data
 
-        db_session.refresh(active_parking_log)
-        assert active_parking_log.time_out is not None
-        assert active_parking_log.time_out > active_parking_log.time_in
+        updated_log = ClientParking.query.get(active_parking_log.id)
+        assert updated_log.time_out is not None
+        assert updated_log.time_out > updated_log.time_in
 
         now = datetime.utcnow()
-        assert active_parking_log.time_out >= now - timedelta(seconds=15)
+        assert updated_log.time_out >= now - timedelta(seconds=15)
 
-        assert db_session.get(ClientParking, active_parking_log.id) is not None
+        assert ClientParking.query.get(active_parking_log.id) is not None
 
-        db_session.refresh(parking)
-        assert parking.count_available_places == initial_spots + 1
+        updated_parking = Parking.query.get(active_parking_log.parking_id)
+        assert updated_parking.count_available_places == initial_spots + 1
 
         duration_minutes = (
-            active_parking_log.time_out - active_parking_log.time_in
+            updated_log.time_out - updated_log.time_in
         ).total_seconds() / 60
         expected_cost = calculate_cost(duration_minutes)
         assert data["cost"] == expected_cost
