@@ -180,7 +180,6 @@ class TestParkingAPI:
         updated_parking = Parking.query.get(sample_parking.id)
         assert updated_parking.count_available_places == initial_spots - 1
 
-
     def test_enter_no_spots(self, client, sample_client, full_parking):
         """Заезд на заполненную парковку +"""
         response = client.post(
@@ -190,7 +189,6 @@ class TestParkingAPI:
         assert response.status_code == 400
         assert "No available places" in response.get_json()["error"]
 
-
     def test_enter_to_close_parking(self, client, sample_client, closed_parking):
         """Заезд на закрытую парковку +"""
         response = client.post(
@@ -199,7 +197,6 @@ class TestParkingAPI:
         )
         assert response.status_code == 400
         assert "Parking is closed" in response.get_json()["error"]
-
 
     def test_enter_with_nonexists_client(self, client, sample_parking):
         """Заезд на парковку с несуществующим клиентом +"""

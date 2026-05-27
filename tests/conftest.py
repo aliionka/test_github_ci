@@ -177,5 +177,3 @@ def active_parking_log(db_session, sample_client, sample_parking):
     db_session.add(active_parking_log)
     db_session.commit()
     return active_parking_log
-
-
