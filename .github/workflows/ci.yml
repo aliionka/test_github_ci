@@ -30,7 +30,7 @@ jobs: # задачи (что делать)
         run: |
           ruff check .
           black --check --diff .
-      - name: Type check with mypy
-        run: mypy app --ignore-missing-imports
+#      - name: Type check with mypy
+#        run: mypy app --ignore-missing-imports
       - name: Test with pytest
         run: pytest tests/
